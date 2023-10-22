@@ -1,0 +1,19 @@
+.app-container {
+  background-color: #222;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  app-chat-display {
+    margin-top: 20px;
+  }
+
+  app-chat-input {
+    margin-top: 20px;
+  }
+}
