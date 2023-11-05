@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Model Interface</title>
+</head>
+<body>
+
+<h2>Language Model Chat</h2>
+
+<!-- Input area for users -->
+<textarea id="inputText" rows="4" cols="50"></textarea><br><br>
+<button onclick="chatWithModel()">Chat</button>
+
+<!-- Area to display the model's response -->
+<h3>Model Response:</h3>
+<p id="modelResponse"></p>
+
+<script>
+    const apiUrl = 'http://127.0.0.1:5000/chat';
+
+    function chatWithModel() {
+        let inputText = document.getElementById('inputText').value;
+
+        const data = {
+            text: inputText
+        };
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('modelResponse').innerText = data.response;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('modelResponse').innerText = 'Error occurred while fetching response.';
+        });
+    }
+</script>
+
+</body>
+</html>

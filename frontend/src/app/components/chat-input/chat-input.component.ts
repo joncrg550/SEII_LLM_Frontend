@@ -8,6 +8,7 @@ import { ChatService } from 'src/app/services/chat-service/chat-service.service'
 })
 export class ChatInputComponent {
   userMessage = '';
+  
 
   constructor(private chatService: ChatService) {}
 
