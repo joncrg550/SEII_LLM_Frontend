@@ -1,0 +1,32 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./APIMock
+    ports:
+      - "5000:5000"
+
+  angular-app:
+    build:
+      context: ./frontend
+    ports:
+      - "4200:80"
+
+  nginx:
+    build:
+      context: ./ReverseProxy
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - angular-app
+
+  postgres:
+    build:
+      context: ./Database
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"      
