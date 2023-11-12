@@ -1,55 +1,47 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatService {
-  chatMessages: { text: string }[] = [];
+  // list to hold the messages, ephemeral,needs to be pushed to database
+  chatMessages: {}[] = [];
+  JSONResponse: any;
+
+  //dependency injection for http client
   constructor(private http: HttpClient) {}
-  // Simulate sending a message to the API (replace with actual API endpoint)
-  sendMessage(message: string): Observable<any> {
-  // Replace 'your-api-endpoint' with the actual API endpoint
-    const endpoint = 'http://127.0.0.1:5000/chat';
-    //if message !empty, Package it as JSON and prepend sender, #TODO factor out sender somewhere else
+
+  //endpoint for chat API
+  private endpoint = 'http://127.0.0.1:5000/chat';
+
+  //function to send messages
+  sendMessage(message: String)  {
+
+    //if the message isn't the empty string
     if (message.trim() !== '') {
-      this.chatMessages.push({ text: "You:" + message });
-      const modifiedMessage = {
-        text: message,
-      };
-      //print for debugging
-      console.log(modifiedMessage)
-      //use fetch API
-      fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(modifiedMessage)
-    }).then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
+
+      //turn the string into a JSON object
+      const JSONMessage = {
+        text: message
       }
-      console.log("DEBUG" + response.json)
-      return response.json(); // This parses the response as JSON
-  })
-  .then(data => {
-      // `data` now contains the response data as a JavaScript object
-      this.chatMessages.push();
-      console.log('Response data:', data);
 
-      // You can perform further actions with `data` here
-  })
-  .catch(error => {
-      // Handle errors, such as network issues or non-successful responses
-      console.error('Error:', error);
-  });
-       // Simulate API call (replace with actual HTTP POST request)
-       return this.http.get(endpoint,  JSON.parse('response'));
+      //print it for debugging
+      console.log(JSONMessage)
+
+      //push it to the front end for viewing
+      this.chatMessages.push("You:" +  message)
+
+      //post it to the API, and process the response
+      this.http.post(this.endpoint, JSONMessage).toPromise().then((data:any) => {
+        //print the response for debugging
+        console.log(data);
+        //peel off the message from the 'response' field of the response
+        this.JSONResponse = data.response;
+        //push this plus AI into the list of messages to display on the frontend.
+        this.chatMessages.push("AI:" + this.JSONResponse)
+      });
+
     }
-
-    else return this.http.post(endpoint,  JSON.stringify("This Shouldn't happen"));
-}
+  }
 }
