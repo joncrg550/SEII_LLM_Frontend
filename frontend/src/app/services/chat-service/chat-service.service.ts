@@ -33,14 +33,23 @@ export class ChatService {
       this.chatMessages.push("You:" +  message)
 
       //post it to the API, and process the response
-      this.http.post(this.endpoint, JSONMessage).toPromise().then((data:any) => {
-        //print the response for debugging
+      this.http.post(this.endpoint, JSONMessage).toPromise()
+      .then((data: any) => {
+        // Print the response for debugging
         console.log(data);
-        //peel off the message from the 'response' field of the response
+        // Peel off the message from the 'response' field of the response
         this.JSONResponse = data.response;
-        //push this plus AI into the list of messages to display on the frontend.
-        this.chatMessages.push("AI:" + this.JSONResponse)
+        // Push this plus AI into the list of messages to display on the frontend.
+        this.chatMessages.push("AI:" + this.JSONResponse);
+      })
+      .catch((error: any) => {
+        // Log the error to the console
+        console.error('Error:', error);
+
+        // Perform any other error handling here
+        // For example, you can set a flag, display an error message, etc.
       });
+
 
     }
   }
