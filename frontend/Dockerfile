@@ -1,23 +1,25 @@
-# Use the official Node.js runtime as a parent image
-FROM node:20
+# Stage 1: Build the Angular app
+FROM node:20 as builder
 
-# Set the working directory to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+COPY package*.json ./
 
-# Install Angular CLI
-RUN npm install -g @angular/cli
-
-# Install app dependencies
 RUN npm install
 
-# Build the Angular app
-RUN ng build 
+COPY . .
 
-# Expose port 80 for the Angular app
+RUN npm run build --prod
+
+# Stage 2: Serve the Angular app using Nginx
+FROM nginx:1.21-alpine
+
+# Copy the built app from the previous stage to the Nginx folder
+COPY --from=builder /app/dist/frontend /usr/share/nginx/html
+
+# Replace the default Nginx configuration with the one for Angular
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 
-# Run the Angular app
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "80"]
+CMD ["nginx", "-g", "daemon off;"]
