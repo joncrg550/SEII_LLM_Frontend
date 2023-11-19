@@ -16,6 +16,8 @@ import { SettingsPageComponent } from './components/Settings/settings-page/setti
 import { ChatsListComponent } from './components/Chat/chats-list/chats-list.component';
 import { LoginFormComponent } from './components/Login/login-form/login-form.component';
 import { ExportDialogComponent } from './components/Settings/export-dialog/export-dialog.component';
+import { Page404Component } from './components/StatusPages/page404/page404.component';
+import { Page403Component } from './components/StatusPages/page403/page403.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { ExportDialogComponent } from './components/Settings/export-dialog/expor
     SettingsPageComponent,
     ChatsListComponent,
     LoginFormComponent,
-    ExportDialogComponent
+    ExportDialogComponent,
+    Page404Component,
+    Page403Component
   ],
   imports: [
     BrowserModule,
