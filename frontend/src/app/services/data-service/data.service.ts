@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import * as pgPromise from 'pg-promise';
 import * as crypto from 'crypto';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -72,6 +73,18 @@ export class DataService {
       );
     } catch (error) {
       console.error('Error updating user:', error);
+      throw error;
+    }
+  }
+
+  public async deleteUser(userId: number): Promise<void> {
+    try {
+      await this.connection.none(
+        'DELETE FROM users WHERE user_id = $1',
+        [userId]
+      );
+    } catch (error) {
+      console.error('Error deleting user:', error);
       throw error;
     }
   }
