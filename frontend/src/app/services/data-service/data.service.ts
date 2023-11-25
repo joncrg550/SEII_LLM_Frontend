@@ -76,6 +76,25 @@ export class DataService {
     }
   }
 
+  public async verifyCredentials(username: string, password: string): Promise<boolean> {
+    try {
+      const userData = await this.connection.oneOrNone(
+        'SELECT password_hash FROM users WHERE username = $1',
+        [username]
+      );
+
+      if (!userData) {
+        return false; // Username doesn't exist in the database
+      }
+
+      const hashedPassword = this.hashPassword(password);
+      return hashedPassword === userData.password_hash;
+    } catch (error) {
+      console.error('Error verifying credentials:', error);
+      throw error;
+    }
+  }
+
   private hashPassword(password: string): string {
     const hash = crypto.createHash('sha256');
     hash.update(password);
