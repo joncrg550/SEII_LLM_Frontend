@@ -82,14 +82,40 @@ export class DataService {
     return hash.digest('hex');
   }
 
-  public async addChatToUser(userId: number, chatContent: string[]): Promise<void> {
+  public async addChatToUser(userId: number, chatContent: string[]): Promise<number> {
     try {
-      await this.connection.none(
-        'INSERT INTO chats (user_id, chat_content) VALUES ($1, $2)',
+      const result = await this.connection.one(
+        'INSERT INTO chats (user_id, chat_content) VALUES ($1, $2) RETURNING chat_id',
         [userId, chatContent]
       );
+      return result.chat_id;
     } catch (error) {
       console.error('Error adding chat to user:', error);
+      throw error;
+    }
+  }
+
+  public async updateChat(chatId: number, newChatContent: string[]): Promise<void> {
+    try {
+      await this.connection.none(
+        'UPDATE chats SET chat_content = $1 WHERE chat_id = $2',
+        [newChatContent, chatId]
+      );
+    } catch (error) {
+      console.error('Error updating chat:', error);
+      throw error;
+    }
+  }
+
+  public async getChatById(chatId: number): Promise<any> {
+    try {
+      const result = await this.connection.oneOrNone(
+        'SELECT * FROM chats WHERE chat_id = $1',
+        [chatId]
+      );
+      return result;
+    } catch (error) {
+      console.error('Error retrieving chat:', error);
       throw error;
     }
   }
