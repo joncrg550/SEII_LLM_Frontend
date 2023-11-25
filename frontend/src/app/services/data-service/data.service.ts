@@ -81,6 +81,135 @@ export class DataService {
     hash.update(password);
     return hash.digest('hex');
   }
+
+  public async addChatToUser(userId: number, chatContent: string[]): Promise<void> {
+    try {
+      await this.connection.none(
+        'INSERT INTO chats (user_id, chat_content) VALUES ($1, $2)',
+        [userId, chatContent]
+      );
+    } catch (error) {
+      console.error('Error adding chat to user:', error);
+      throw error;
+    }
+  }
+
+  public async getChatsByUser(userId: number): Promise<any[]> {
+    try {
+      const result = await this.connection.manyOrNone(
+        'SELECT * FROM chats WHERE user_id = $1',
+        [userId]
+      );
+      return result;
+    } catch (error) {
+      console.error('Error retrieving chats for user:', error);
+      throw error;
+    }
+  }
+
+  public async setUserSettings(userId: number, darkMode: boolean, temperature: number, typingSpeed: number): Promise<void> {
+    try {
+      await this.connection.none(
+        'INSERT INTO user_settings (user_id, dark_mode, temperature, typing_speed) VALUES ($1, $2, $3, $4) ' +
+        'ON CONFLICT (user_id) DO UPDATE SET dark_mode = $2, temperature = $3, typing_speed = $4',
+        [userId, darkMode, temperature, typingSpeed]
+      );
+    } catch (error) {
+      console.error('Error setting user settings:', error);
+      throw error;
+    }
+  }
+
+  public async getUserSettings(userId: number): Promise<any> {
+    try {
+      const result = await this.connection.oneOrNone(
+        'SELECT * FROM user_settings WHERE user_id = $1',
+        [userId]
+      );
+      return result;
+    } catch (error) {
+      console.error('Error retrieving user settings:', error);
+      throw error;
+    }
+  }
+
+  public async setDarkMode(userId: number, darkMode: boolean): Promise<void> {
+    try {
+      await this.connection.none(
+        'INSERT INTO user_settings (user_id, dark_mode) VALUES ($1, $2) ' +
+        'ON CONFLICT (user_id) DO UPDATE SET dark_mode = $2',
+        [userId, darkMode]
+      );
+    } catch (error) {
+      console.error('Error setting dark mode:', error);
+      throw error;
+    }
+  }
+
+  public async getDarkMode(userId: number): Promise<boolean> {
+    try {
+      const result = await this.connection.oneOrNone(
+        'SELECT dark_mode FROM user_settings WHERE user_id = $1',
+        [userId]
+      );
+      return result ? result.dark_mode : false;
+    } catch (error) {
+      console.error('Error retrieving dark mode:', error);
+      throw error;
+    }
+  }
+
+  public async setTemperature(userId: number, temperature: number): Promise<void> {
+    try {
+      await this.connection.none(
+        'INSERT INTO user_settings (user_id, temperature) VALUES ($1, $2) ' +
+        'ON CONFLICT (user_id) DO UPDATE SET temperature = $2',
+        [userId, temperature]
+      );
+    } catch (error) {
+      console.error('Error setting temperature:', error);
+      throw error;
+    }
+  }
+
+  public async getTemperature(userId: number): Promise<number> {
+    try {
+      const result = await this.connection.oneOrNone(
+        'SELECT temperature FROM user_settings WHERE user_id = $1',
+        [userId]
+      );
+      return result ? result.temperature : 1; // Assuming default value of 1
+    } catch (error) {
+      console.error('Error retrieving temperature:', error);
+      throw error;
+    }
+  }
+
+  public async setTypingSpeed(userId: number, typingSpeed: number): Promise<void> {
+    try {
+      await this.connection.none(
+        'INSERT INTO user_settings (user_id, typing_speed) VALUES ($1, $2) ' +
+        'ON CONFLICT (user_id) DO UPDATE SET typing_speed = $2',
+        [userId, typingSpeed]
+      );
+    } catch (error) {
+      console.error('Error setting typing speed:', error);
+      throw error;
+    }
+  }
+
+  public async getTypingSpeed(userId: number): Promise<number> {
+    try {
+      const result = await this.connection.oneOrNone(
+        'SELECT typing_speed FROM user_settings WHERE user_id = $1',
+        [userId]
+      );
+      return result ? result.typing_speed : 1; // Assuming default value of 1
+    } catch (error) {
+      console.error('Error retrieving typing speed:', error);
+      throw error;
+    }
+  }
+
 }
 
-//TODO add logic for retrieving storing and retrieving chats and user settings on the database
