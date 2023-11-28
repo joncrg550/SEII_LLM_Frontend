@@ -1,6 +1,7 @@
 
 import { Component } from '@angular/core';
 import { DataService } from 'src/app/services/data-service/data.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'login-form',
   templateUrl: './login-form.component.html',
@@ -10,21 +11,24 @@ export class LoginFormComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private router: Router) {}
 
   login(): void {
     if (this.username.trim() !== '' && this.password.trim() !== '') {
       this.dataService.verifyCredentials(this.username, this.password)
-        .then(isValid => {
+        .toPromise()
+        .then((isValid: boolean) => {
           if (isValid) {
             console.log('Login successful!');
             // Perform actions after successful login (e.g., navigate to a different page)
+            this.router.navigate(['/chat']);
+           
           } else {
             console.error('Invalid username or password!');
             // Handle case where login credentials are invalid
           }
         })
-        .catch(error => {
+        .catch((error: any) => {
           console.error('Error during login:', error);
           // Handle error during login process
         });
@@ -35,7 +39,7 @@ export class LoginFormComponent {
   }
 
   createAccount(): void {
-    // Implement createAccount functionality if needed, perhaps using router navigation
-    // You can redirect to the create account page or show a modal, etc.
+    // Navigate to the new account page
+    this.router.navigate(['/new-account']);
   }
 }

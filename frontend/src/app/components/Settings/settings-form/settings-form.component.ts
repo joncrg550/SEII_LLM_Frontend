@@ -33,22 +33,20 @@ export class SettingsFormComponent {
       }
 
       this.dataService.updateUser(this.userId, this.currentPassword, this.newPassword)
-        .then(() => {
+        .subscribe(() => {
           console.log('Password changed successfully!');
           // Perform actions after successful password change
-        })
-        .catch(error => {
+        }, (error: any) => {
           console.error('Error changing password:', error);
           // Handle error during password change process
         });
 
       // Update user settings
       this.dataService.setUserSettings(this.userId, this.selectedTheme, this.selectedTemperature, this.selectedSpeed)
-        .then(() => {
+        .subscribe(() => {
           console.log('Settings updated successfully!');
           // Perform actions after successful settings update
-        })
-        .catch(error => {
+        }, (error: any) => {
           console.error('Error updating settings:', error);
           // Handle error during settings update process
         });
@@ -61,11 +59,10 @@ export class SettingsFormComponent {
   deleteAccount(): void {
     if (confirm('Are you sure you want to delete your account?')) {
       this.dataService.deleteUser(this.userId)
-        .then(() => {
+        .subscribe(() => {
           console.log('Account deleted successfully!');
           // Perform actions after successful account deletion (e.g., navigate to a different page)
-        })
-        .catch(error => {
+        }, (error: any) => {
           console.error('Error deleting account:', error);
           // Handle error during account deletion process
         });

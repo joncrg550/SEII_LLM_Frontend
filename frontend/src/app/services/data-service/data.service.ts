@@ -1,273 +1,89 @@
-
 import { Injectable } from '@angular/core';
-import * as pgPromise from 'pg-promise';
-import * as crypto from 'crypto';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private pgp: any;
-  private connection: any;
+  private apiUrl = 'http://127.0.0.1:8888'; 
 
-  constructor() {
-    this.pgp = pgPromise();
-    this.connectToDatabase();
+  constructor(private http: HttpClient) {}
+
+  public addUser(username: string, password: string): Observable<any> {
+    const body = { username, password };
+    return this.http.post<any>(`${this.apiUrl}/users/add`, body);
   }
 
-  private async connectToDatabase() {
-    const config = {
-      host: 'localhost',
-      port: 5432,
-      database: 'SEII_LLM_Frontend',
-      user: 'chatUser',
-      password: 'chatPassword123!'
-    };
-
-    this.connection = this.pgp(config);
-
-    try {
-      await this.connection.connect();
-      console.log('Connected to the database');
-    } catch (error) {
-      console.error('Error connecting to the database:', error);
-    }
+  public getUserById(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/users/${userId}`);
   }
 
-  public async addUser(username: string, password: string): Promise<number> {
-    const hashedPassword = this.hashPassword(password);
-
-    try {
-      const result = await this.connection.one(
-        'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING user_id',
-        [username, hashedPassword]
-      );
-      return result.user_id;
-    } catch (error) {
-      console.error('Error adding user:', error);
-      throw error;
-    }
+  public updateUser(userId: number, username: string, password: string): Observable<any> {
+    const body = { username, password };
+    return this.http.put<any>(`${this.apiUrl}/users/${userId}`, body);
   }
 
-  public async getUserById(userId: number): Promise<any> {
-    try {
-      const result = await this.connection.oneOrNone(
-        'SELECT * FROM users WHERE user_id = $1',
-        [userId]
-      );
-      return result;
-    } catch (error) {
-      console.error('Error retrieving user:', error);
-      throw error;
-    }
+  public deleteUser(userId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/users/${userId}`);
   }
 
-  public async updateUser(userId: number, username: string, password: string): Promise<void> {
-    const hashedPassword = this.hashPassword(password);
-
-    try {
-      await this.connection.none(
-        'UPDATE users SET username = $1, password_hash = $2 WHERE user_id = $3',
-        [username, hashedPassword, userId]
-      );
-    } catch (error) {
-      console.error('Error updating user:', error);
-      throw error;
-    }
+  public verifyCredentials(username: string, password: string): Observable<any> {
+    const body = { username, password };
+    return this.http.post<any>(`${this.apiUrl}/users/verify`, body);
   }
 
-  public async deleteUser(userId: number): Promise<void> {
-    try {
-      await this.connection.none(
-        'DELETE FROM users WHERE user_id = $1',
-        [userId]
-      );
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      throw error;
-    }
+  public addChatToUser(userId: number, chatContent: string[]): Observable<any> {
+    const body = { user_id: userId, chat_content: chatContent };
+    return this.http.post<any>(`${this.apiUrl}/chats/add`, body);
   }
 
-  public async verifyCredentials(username: string, password: string): Promise<boolean> {
-    try {
-      const userData = await this.connection.oneOrNone(
-        'SELECT password_hash FROM users WHERE username = $1',
-        [username]
-      );
-
-      if (!userData) {
-        return false; // Username doesn't exist in the database
-      }
-
-      const hashedPassword = this.hashPassword(password);
-      return hashedPassword === userData.password_hash;
-    } catch (error) {
-      console.error('Error verifying credentials:', error);
-      throw error;
-    }
+  public updateChat(chatId: number, newChatContent: string[]): Observable<any> {
+    const body = { new_chat_content: newChatContent };
+    return this.http.put<any>(`${this.apiUrl}/chats/${chatId}`, body);
   }
 
-  private hashPassword(password: string): string {
-    const hash = crypto.createHash('sha256');
-    hash.update(password);
-    return hash.digest('hex');
+  public getChatById(chatId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/chats/${chatId}`);
   }
 
-  public async addChatToUser(userId: number, chatContent: string[]): Promise<number> {
-    try {
-      const result = await this.connection.one(
-        'INSERT INTO chats (user_id, chat_content) VALUES ($1, $2) RETURNING chat_id',
-        [userId, chatContent]
-      );
-      return result.chat_id;
-    } catch (error) {
-      console.error('Error adding chat to user:', error);
-      throw error;
-    }
+  public getChatsByUser(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/chats/user/${userId}`);
   }
 
-  public async updateChat(chatId: number, newChatContent: string[]): Promise<void> {
-    try {
-      await this.connection.none(
-        'UPDATE chats SET chat_content = $1 WHERE chat_id = $2',
-        [newChatContent, chatId]
-      );
-    } catch (error) {
-      console.error('Error updating chat:', error);
-      throw error;
-    }
+  public setUserSettings(userId: number, darkMode: boolean, temperature: number, typingSpeed: number): Observable<any> {
+    const body = { user_id: userId, dark_mode: darkMode, temperature, typing_speed: typingSpeed };
+    return this.http.post<any>(`${this.apiUrl}/user_settings/add`, body);
   }
 
-  public async getChatById(chatId: number): Promise<any> {
-    try {
-      const result = await this.connection.oneOrNone(
-        'SELECT * FROM chats WHERE chat_id = $1',
-        [chatId]
-      );
-      return result;
-    } catch (error) {
-      console.error('Error retrieving chat:', error);
-      throw error;
-    }
+  public getUserSettings(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/user_settings/${userId}`);
   }
 
-  public async getChatsByUser(userId: number): Promise<any[]> {
-    try {
-      const result = await this.connection.manyOrNone(
-        'SELECT * FROM chats WHERE user_id = $1',
-        [userId]
-      );
-      return result;
-    } catch (error) {
-      console.error('Error retrieving chats for user:', error);
-      throw error;
-    }
+  public setDarkMode(userId: number, darkMode: boolean): Observable<any> {
+    const body = { dark_mode: darkMode };
+    return this.http.put<any>(`${this.apiUrl}/user_settings/dark_mode/${userId}`, body);
   }
 
-  public async setUserSettings(userId: number, darkMode: boolean, temperature: number, typingSpeed: number): Promise<void> {
-    try {
-      await this.connection.none(
-        'INSERT INTO user_settings (user_id, dark_mode, temperature, typing_speed) VALUES ($1, $2, $3, $4) ' +
-        'ON CONFLICT (user_id) DO UPDATE SET dark_mode = $2, temperature = $3, typing_speed = $4',
-        [userId, darkMode, temperature, typingSpeed]
-      );
-    } catch (error) {
-      console.error('Error setting user settings:', error);
-      throw error;
-    }
+  public getDarkMode(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/user_settings/dark_mode/${userId}`);
   }
 
-  public async getUserSettings(userId: number): Promise<any> {
-    try {
-      const result = await this.connection.oneOrNone(
-        'SELECT * FROM user_settings WHERE user_id = $1',
-        [userId]
-      );
-      return result;
-    } catch (error) {
-      console.error('Error retrieving user settings:', error);
-      throw error;
-    }
+  public setTemperature(userId: number, temperature: number): Observable<any> {
+    const body = { temperature };
+    return this.http.put<any>(`${this.apiUrl}/user_settings/temperature/${userId}`, body);
   }
 
-  public async setDarkMode(userId: number, darkMode: boolean): Promise<void> {
-    try {
-      await this.connection.none(
-        'INSERT INTO user_settings (user_id, dark_mode) VALUES ($1, $2) ' +
-        'ON CONFLICT (user_id) DO UPDATE SET dark_mode = $2',
-        [userId, darkMode]
-      );
-    } catch (error) {
-      console.error('Error setting dark mode:', error);
-      throw error;
-    }
+  public getTemperature(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/user_settings/temperature/${userId}`);
   }
 
-  public async getDarkMode(userId: number): Promise<boolean> {
-    try {
-      const result = await this.connection.oneOrNone(
-        'SELECT dark_mode FROM user_settings WHERE user_id = $1',
-        [userId]
-      );
-      return result ? result.dark_mode : false;
-    } catch (error) {
-      console.error('Error retrieving dark mode:', error);
-      throw error;
-    }
+  public setTypingSpeed(userId: number, typingSpeed: number): Observable<any> {
+    const body = { typing_speed: typingSpeed };
+    return this.http.put<any>(`${this.apiUrl}/user_settings/typing_speed/${userId}`, body);
   }
 
-  public async setTemperature(userId: number, temperature: number): Promise<void> {
-    try {
-      await this.connection.none(
-        'INSERT INTO user_settings (user_id, temperature) VALUES ($1, $2) ' +
-        'ON CONFLICT (user_id) DO UPDATE SET temperature = $2',
-        [userId, temperature]
-      );
-    } catch (error) {
-      console.error('Error setting temperature:', error);
-      throw error;
-    }
+  public getTypingSpeed(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/user_settings/typing_speed/${userId}`);
   }
-
-  public async getTemperature(userId: number): Promise<number> {
-    try {
-      const result = await this.connection.oneOrNone(
-        'SELECT temperature FROM user_settings WHERE user_id = $1',
-        [userId]
-      );
-      return result ? result.temperature : 1; // Assuming default value of 1
-    } catch (error) {
-      console.error('Error retrieving temperature:', error);
-      throw error;
-    }
-  }
-
-  public async setTypingSpeed(userId: number, typingSpeed: number): Promise<void> {
-    try {
-      await this.connection.none(
-        'INSERT INTO user_settings (user_id, typing_speed) VALUES ($1, $2) ' +
-        'ON CONFLICT (user_id) DO UPDATE SET typing_speed = $2',
-        [userId, typingSpeed]
-      );
-    } catch (error) {
-      console.error('Error setting typing speed:', error);
-      throw error;
-    }
-  }
-
-  public async getTypingSpeed(userId: number): Promise<number> {
-    try {
-      const result = await this.connection.oneOrNone(
-        'SELECT typing_speed FROM user_settings WHERE user_id = $1',
-        [userId]
-      );
-      return result ? result.typing_speed : 1; // Assuming default value of 1
-    } catch (error) {
-      console.error('Error retrieving typing speed:', error);
-      throw error;
-    }
-  }
-
 }
-

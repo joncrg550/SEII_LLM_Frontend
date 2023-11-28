@@ -1,6 +1,7 @@
 -- Create the database for users, chats, and settings
 CREATE DATABASE SEII_LLM_Frontend;
 
+
 -- Connect to the newly created database
 \c SEII_LLM_Frontend;
 
