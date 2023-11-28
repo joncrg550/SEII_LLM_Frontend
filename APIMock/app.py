@@ -3,7 +3,7 @@ from flask_cors import CORS
 import random
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}}) #allow all origins for demo purposes
 
 
 sentence_list = []

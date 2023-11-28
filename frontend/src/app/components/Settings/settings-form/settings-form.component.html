@@ -1,0 +1,75 @@
+<!-- FILEPATH: /c:/Users/joncr/Desktop/SEII_LLM_Frontend/frontend/src/app/components/Settings/settings-form/settings-form.component.html -->
+
+<form (ngSubmit)="submitForm()">
+  <h2>Change Password</h2>
+  <div>
+    <label for="currentPassword">Current Password:</label>
+    <input type="password" id="currentPassword" name="currentPassword" [(ngModel)]="currentPassword" required>
+  </div>
+  <div>
+    <label for="newPassword">New Password:</label>
+    <input type="password" id="newPassword" name="newPassword" [(ngModel)]="newPassword" required>
+  </div>
+  <div>
+    <label for="confirmPassword">Confirm Password:</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" required>
+  </div>
+
+  <h2>Theme</h2>
+  <div>
+    <label for="lightTheme">Light Mode</label>
+    <input type="radio" id="lightTheme" name="theme" value="light" [(ngModel)]="selectedTheme" required>
+  </div>
+  <div>
+    <label for="darkTheme">Dark Mode</label>
+    <input type="radio" id="darkTheme" name="theme" value="dark" [(ngModel)]="selectedTheme" required>
+  </div>
+
+  <h2>Temperature</h2>
+  <div>
+    <label for="temperature1">1</label>
+    <input type="radio" id="temperature1" name="temperature" value="1" [(ngModel)]="selectedTemperature" required>
+  </div>
+  <div>
+    <label for="temperature2">2</label>
+    <input type="radio" id="temperature2" name="temperature" value="2" [(ngModel)]="selectedTemperature" required>
+  </div>
+  <div>
+    <label for="temperature3">3</label>
+    <input type="radio" id="temperature3" name="temperature" value="3" [(ngModel)]="selectedTemperature" required>
+  </div>
+  <div>
+    <label for="temperature4">4</label>
+    <input type="radio" id="temperature4" name="temperature" value="4" [(ngModel)]="selectedTemperature" required>
+  </div>
+  <div>
+    <label for="temperature5">5</label>
+    <input type="radio" id="temperature5" name="temperature" value="5" [(ngModel)]="selectedTemperature" required>
+  </div>
+
+  <h2>Typing Speed</h2>
+  <div>
+    <label for="speed1">1</label>
+    <input type="radio" id="speed1" name="speed" value="1" [(ngModel)]="selectedSpeed" required>
+  </div>
+  <div>
+    <label for="speed2">2</label>
+    <input type="radio" id="speed2" name="speed" value="2" [(ngModel)]="selectedSpeed" required>
+  </div>
+  <div>
+    <label for="speed3">3</label>
+    <input type="radio" id="speed3" name="speed" value="3" [(ngModel)]="selectedSpeed" required>
+  </div>
+  <div>
+    <label for="speed4">4</label>
+    <input type="radio" id="speed4" name="speed" value="4" [(ngModel)]="selectedSpeed" required>
+  </div>
+  <div>
+    <label for="speed5">5</label>
+    <input type="radio" id="speed5" name="speed" value="5" [(ngModel)]="selectedSpeed" required>
+  </div>
+
+  <button type="submit">Save Changes</button>
+  <button type="button" (click)="deleteAccount()">Delete Account</button>
+</form>
+
