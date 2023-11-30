@@ -1,6 +1,19 @@
-<div class="chat-input">
-  <textarea [(ngModel)]="userMessage" (keydown.enter)="sendMessage()" placeholder="Type your message and press Enter..." ></textarea>
-  <button (click)="sendMessage()">
-    <i class="fa fa-arrow-circle-right"></i> Send
-  </button>
+<div class="row">
+  <div class="chat-input">
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+          <span class="input-group-text p-4" id="basic-addon3">Message</span>
+      </div>
+      <textarea class="form-control" [(ngModel)]="userMessage" (keydown.enter)="sendMessage()" placeholder="Type your message and press Enter..." ></textarea>
+    </div> 
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-11"> <!-- spacer --> </div>
+  <div class="col-1">
+    <button type="button" class="btn btn-primary text-right" (click)="sendMessage()">
+      <i class="bi bi-send"></i>  Send
+    </button>
+  </div>
 </div>
