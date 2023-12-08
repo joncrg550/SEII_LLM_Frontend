@@ -9,7 +9,6 @@ import { ChatService } from 'src/app/services/chat-service/chat.service';
 export class ChatInputComponent {
   userMessage = '';
 
-
   constructor(private chatService: ChatService) {}
 
   sendMessage() {
@@ -18,6 +17,7 @@ export class ChatInputComponent {
       // Call your chat service to send the message to the API
       this.chatService.sendMessage(this.userMessage);
       this.userMessage = '';
+      //alert('test');
     }
   }
 }

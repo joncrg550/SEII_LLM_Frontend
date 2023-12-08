@@ -3,3 +3,26 @@
     {{ message }}
   </div>
 </div>
+
+<script>
+  function typeText(item, text, delay, i) {
+    $(item).append(text.charAt(i))
+        .delay(delay)
+        .promise()
+        .done(function() {
+          if(i<text.length) {
+            i++;
+            typeText(item, text, delay, i);  
+          }
+    });       
+}
+
+var text = 'Some Text';
+var item = $("#_ngcontent-ng-c3338167516");
+
+$(document).on('click', 'button', function(){
+  item.empty();
+  typeText(item, text, 500, 0);
+});
+
+</script>
