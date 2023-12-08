@@ -11,7 +11,7 @@ export class HistoryDisplayComponent {
   onInit(){
     console.log("init history display");
     this.historyService.getAllChats();
-    this.historyService.getChat(3);
+    this.historyService.getChat(1);
   }
 
   displayChatMessages() {

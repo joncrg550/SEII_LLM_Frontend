@@ -8,7 +8,13 @@ import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.c
 })
 export class ChatService {
   // list to hold the messages, ephemeral,needs to be pushed to database
+
   chatMessages: {}[] = [];
+
+  private JSONResponse: any;
+  private userID: any = this.dataService.getUserID();
+  private chatID: any;
+
   lastMessage: any;
   JSONResponse: any;
   currentOwner?: ChatPageComponent;
@@ -65,6 +71,17 @@ export class ChatService {
         this.JSONResponse = data.response;
         // Push this plus AI into the list of messages to display on the frontend.
         this.chatMessages.push("AI:" + this.JSONResponse);
+
+
+        // push the updated chat and response to the database
+        this.dataService.updateChat(this.chatID, this.chatMessages);
+        console.log("chatID", this.chatID);
+        console.log("chatMessages", this.chatMessages);
+        this.dataService.getChatByUserAndId(this.userID, this.chatID).subscribe(data => {
+          console.log("data", data);
+        });
+      });
+
         // this.chatMessages.push("AI:CODE:" + `
         // <html>
         //      <article>
@@ -72,6 +89,7 @@ export class ChatService {
         //     </article>
         //  </html>
         //  `);
+
 
         this.lastMessage = "AI:" + this.JSONResponse;
         this.currentOwner?.getChatDisplay.startNewAIResponse(this.lastMessage);
@@ -93,6 +111,7 @@ export class ChatService {
         // Perform any other error handling here
         // For example, you can set a flag, display an error message, etc.
       });
+
 
 
     }
