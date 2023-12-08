@@ -1,5 +1,59 @@
-<div class="chat-display">
-  <div class="chat-message" *ngFor="let message of displayChatMessages()">
-    {{ message }}
-  </div>
+<div id="chatDisplayBox" class="container">
+
+  <ng-container *ngFor="let message of displayChatMessages(); index as i; last as isLast;">
+
+    <div *ngIf="!isLast" class="row">
+
+      <div class="col">
+      <div *ngIf="isBot(i) && !isLast" class="card text-white bg-dark mb-3" style="width: 50%;">
+        <div class="card-body">
+          <div>
+            
+              <pre *ngIf="isCode(i)">
+              {{ message }}
+              </pre>
+              <span *ngIf="!isCode(i)">
+              {{ message }}
+              </span>
+          
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col">
+
+     
+      <div *ngIf="!isBot(i) && !isLast" class="card bg-light mb-3" style="width: 50%;">
+        <div class="card-body">
+          <div class="text-right">
+            <span class="text-end">
+                {{ message }}
+            </span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+
+    </div>
+
+  </ng-container>
+ 
+  <ngx-typed-js #typed>
+    <div class="row">
+      <div class="card">
+        <div class="card-body">
+          <div class="chat-message">
+            <span class="typing">
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ngx-typed-js>
+
 </div>
+
