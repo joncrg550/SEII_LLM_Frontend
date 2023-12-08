@@ -6,6 +6,7 @@ import hashlib
 import json
 from json import JSONDecodeError
 
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) #allow all origins for demo purposes
 
@@ -177,6 +178,7 @@ def add_chat_to_user():
     finally:
         cursor.close()
         conn.close()
+
 
 
 @app.route('/chats/<int:chat_id>/user/<int:user_id>', methods=['PUT'])
