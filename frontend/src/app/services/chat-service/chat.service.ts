@@ -11,15 +11,14 @@ export class ChatService {
 
   chatMessages: {}[] = [];
 
-  private JSONResponse: any;
+
   private userID: any = this.dataService.getUserID();
   private chatID: any;
 
   lastMessage: any;
   JSONResponse: any;
   currentOwner?: ChatPageComponent;
-  private userID: any = this.dataService.getUserID();
-  private chatID: any;
+
 
   //dependency injection for http client
  //dependency injection for http client
@@ -103,14 +102,6 @@ export class ChatService {
           console.log("data", data);
         });
 
-      })
-      .catch((error: any) => {
-        // Log the error to the console
-        console.error('Error:', error);
-
-        // Perform any other error handling here
-        // For example, you can set a flag, display an error message, etc.
-      });
 
 
 
