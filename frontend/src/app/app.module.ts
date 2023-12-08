@@ -20,6 +20,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HistoryPageComponent } from './components/History/history-page/history-page.component';
 import { HistoryDisplayComponent } from './components/History/history-display/history-display.component';
 import { ChatSelectorComponent } from './components/History/chat-selector/chat-selector.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {NgxTypedJsModule} from 'ngx-typed-js';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { ChatSelectorComponent } from './components/History/chat-selector/chat-s
     FormsModule,
     HttpClientModule,
     NgbModule,
+    BrowserAnimationsModule,
+    NgxTypedJsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

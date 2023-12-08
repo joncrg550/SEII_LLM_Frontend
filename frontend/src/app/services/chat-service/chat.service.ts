@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DataService } from '../data-service/data.service';
+import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.component';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   // list to hold the messages, ephemeral,needs to be pushed to database
+
   private chatMessages: string [] = [];
   private JSONResponse: any;
   private userID: any = this.dataService.getUserID();
   private chatID: any;
+  lastMessage: any;
+  currentOwner?: ChatPageComponent;
+
 
   //dependency injection for http client
   constructor(private http: HttpClient, private dataService: DataService) {}
+
+  setOwner(object:ChatPageComponent){
+    this.currentOwner = object;
+  }
 
   //endpoint for chat API
   private endpoint = 'http://127.0.0.1:5000/chat';
@@ -62,6 +71,7 @@ export class ChatService {
         this.JSONResponse = data.response;
         // Push this plus AI into the list of messages to display on the frontend.
         this.chatMessages.push("AI:" + this.JSONResponse);
+
         // push the updated chat and response to the database
         this.dataService.updateChat(this.chatID, this.chatMessages);
         console.log("chatID", this.chatID);
@@ -70,6 +80,28 @@ export class ChatService {
           console.log("data", data);
         });
       }); 
+
+        // this.chatMessages.push("AI:CODE:" + `
+        // <html>
+        //      <article>
+        //     <h1>Article Heading</h1>
+        //     </article>
+        //  </html>
+        //  `);
+
+        
+        this.lastMessage = "AI:" + this.JSONResponse;
+        this.currentOwner?.getChatDisplay.startNewAIResponse(this.lastMessage);
+        // this.chatMessages.push("AI:" + this.JSONResponse);
+      })
+      .catch((error: any) => {
+        // Log the error to the console
+        console.error('Error:', error);
+
+        // Perform any other error handling here
+        // For example, you can set a flag, display an error message, etc.
+      });
+
     }
   }
 }
