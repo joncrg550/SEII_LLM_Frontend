@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Directive, ViewChild, ElementRef, OnInit, SimpleChange, Inject} from '@angular/core';
 import { NgxTypedJsComponent } from 'ngx-typed-js';
-// import { ChatService } from 'src/app/services/chat-service/chat.service';
+import { ChatService } from 'src/app/services/chat-service/chat.service';
 import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.component';
 
 @Component({
@@ -12,10 +12,11 @@ import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.c
   ],
 })
 
+
 export class ChatDisplayComponent implements AfterViewInit, OnInit {
 
   constructor(
-    @Inject(ChatPageComponent) private parent: ChatPageComponent
+    @Inject(ChatPageComponent) private parent: ChatPageComponent, private chatService:ChatService
     ) {}
 
   name: any;
@@ -81,8 +82,9 @@ export class ChatDisplayComponent implements AfterViewInit, OnInit {
       this.typed.doReset();
     }
 
-   get chatMessages() {
+    displayChatMessages() {
     this.name = this.parent.getChatService.lastMessage;
-    return this.parent.getChatService.chatMessages;
+    return this.chatService.getChatMessages();
+    }
   }
 }

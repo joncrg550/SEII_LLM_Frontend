@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DataService } from '../data-service/data.service';
 import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.component';
 
 @Injectable({
@@ -7,13 +8,17 @@ import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.c
 })
 export class ChatService {
   // list to hold the messages, ephemeral,needs to be pushed to database
-  chatMessages: {}[] = [];
+
+  private chatMessages: string [] = [];
+  private JSONResponse: any;
+  private userID: any = this.dataService.getUserID();
+  private chatID: any;
   lastMessage: any;
-  JSONResponse: any;
   currentOwner?: ChatPageComponent;
 
+
   //dependency injection for http client
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private dataService: DataService) {}
 
   setOwner(object:ChatPageComponent){
     this.currentOwner = object;
@@ -21,6 +26,23 @@ export class ChatService {
 
   //endpoint for chat API
   private endpoint = 'http://127.0.0.1:5000/chat';
+
+  getChatMessages(): string[] {
+    return this.chatMessages;
+  }
+
+  createNewChat(): void {
+    console.log('userid',this.userID)
+    //create a new chat on the database
+    this.chatMessages = [];
+    this.dataService.addChatToUser(this.userID, this.chatMessages)
+      .subscribe((response: any) => {
+        console.log('Response:', response);
+        this.chatID = response.chat_id;
+      }, (error: any) => {
+        console.error('Error:', error.response);
+      });
+  }
 
   //function to send messages
   sendMessage(message: String)  {
@@ -39,6 +61,7 @@ export class ChatService {
       //push it to the front end for viewing
       this.chatMessages.push("You:" +  message)
 
+
       //post it to the API, and process the response
       this.http.post(this.endpoint, JSONMessage).toPromise()
       .then((data: any) => {
@@ -48,6 +71,16 @@ export class ChatService {
         this.JSONResponse = data.response;
         // Push this plus AI into the list of messages to display on the frontend.
         this.chatMessages.push("AI:" + this.JSONResponse);
+
+        // push the updated chat and response to the database
+        this.dataService.updateChat(this.chatID, this.chatMessages);
+        console.log("chatID", this.chatID);
+        console.log("chatMessages", this.chatMessages);
+        this.dataService.getChatByUserAndId(this.userID, this.chatID).subscribe(data => {
+          console.log("data", data);
+        });
+      }); 
+
         // this.chatMessages.push("AI:CODE:" + `
         // <html>
         //      <article>
@@ -69,7 +102,7 @@ export class ChatService {
         // For example, you can set a flag, display an error message, etc.
       });
 
-
     }
   }
 }
+

@@ -6,13 +6,17 @@ import { ChatPageComponent } from './components/Chat/chat-page/chat-page.compone
 import { SettingsPageComponent } from './components/Settings/settings-page/settings-page.component';
 import { Page404Component } from './components/StatusPages/page404/page404.component';
 import { Page403Component } from './components/StatusPages/page403/page403.component';
+import { HistoryPageComponent } from './components/History/history-page/history-page.component';
+import { DisableRouteGuard } from './guards/disable-route.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' }, // Default route to login
   { path: 'login', component: LoginPageComponent },
   { path: 'new-account', component: NewAccountPageComponent },
-  { path: 'chat', component: ChatPageComponent },
-  { path: 'settings', component: SettingsPageComponent },
+  { path: 'chat', component: ChatPageComponent, canActivate: [DisableRouteGuard] },
+  { path: 'settings', component: SettingsPageComponent, canActivate: [DisableRouteGuard] },
+  { path: 'history', component: HistoryPageComponent, canActivate: [DisableRouteGuard] },
+  { path: '403', component: Page403Component},
   { path: '**', component: Page404Component }
   // Define additional routes as needed
 ];

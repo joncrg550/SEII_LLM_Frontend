@@ -30,15 +30,5 @@ services:
     ports:
       - "8888:8888"   
 
-#comment out reverse proxy, probably only needed to serve to web in a prod env
-  # nginx:
-  #   build:
-  #     context: ./ReverseProxy
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - api
-  #     - angular-app      
-
 volumes:
   postgres_data:

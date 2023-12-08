@@ -22,7 +22,6 @@ CREATE TABLE chats (
 -- Create a table for user settings
 CREATE TABLE user_settings (
     user_id INT REFERENCES users(user_id),
-    dark_mode BOOLEAN DEFAULT FALSE,
     temperature INT CHECK (temperature >= 1 AND temperature <= 5),
     typing_speed INT CHECK (typing_speed >= 1 AND typing_speed <= 5),
     PRIMARY KEY (user_id)

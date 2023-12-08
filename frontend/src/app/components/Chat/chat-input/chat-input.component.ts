@@ -1,6 +1,8 @@
 import { Component,ViewChild, Inject } from '@angular/core';
 import { NgxTypedJsComponent } from 'ngx-typed-js';
 import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.component';
+import { ChatService } from 'src/app/services/chat-service/chat.service';
+
 
 @Component({
   selector: 'chat-input',
@@ -9,12 +11,17 @@ import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.c
 })
 export class ChatInputComponent {
   constructor(
-    @Inject(ChatPageComponent) private parent: ChatPageComponent
-    // private chatService: ChatService
+    @Inject(ChatPageComponent) private parent: ChatPageComponent,
+    private chatService: ChatService
     ) {}
+
+  onInit() {
+    this.chatService.createNewChat();
+  }
 
     userMessage = '';
     @ViewChild(NgxTypedJsComponent) typed!: NgxTypedJsComponent;
+
 
   sendMessage() {
     // Implement sending the message to the chat service here
@@ -26,5 +33,9 @@ export class ChatInputComponent {
       this.userMessage = '';
       //alert('test');
     }
+  }
+
+  newChat(){
+    this.chatService.createNewChat();
   }
 }

@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import psycopg2
+from psycopg2.extras import Json
 import hashlib
+import json
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) #allow all origins for demo purposes
@@ -23,10 +25,6 @@ def get_db_connection():
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-import psycopg2
-import hashlib
 
 @app.route('/users/add', methods=['POST'])
 def add_user():
@@ -43,7 +41,15 @@ def add_user():
                        (username, hashed_password))
         user_id = cursor.fetchone()[0]
         conn.commit()
-        return jsonify({'user_id': user_id}), 201
+        
+        user_data = {
+            'user_id': user_id,
+            'username': username,
+            'password': password,
+            'hashed_password': hashed_password
+        }
+        
+        return jsonify(user_data), 201
     except Exception as e:
         conn.rollback()
         return jsonify({'error': str(e)}), 500
@@ -122,18 +128,23 @@ def verify_credentials():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-
+    
+    # Log the username and password
+    print(f"Username: {username}")
+    print(f"Password: {password}")
+    
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        cursor.execute('SELECT password_hash FROM users WHERE username = %s', (username,))
-        user_password = cursor.fetchone()
+        cursor.execute('SELECT user_id, password_hash FROM users WHERE username = %s', (username,))
+        user_data = cursor.fetchone()
 
-        if user_password:
+        if user_data:
+            user_id = user_data[0]
             hashed_password = hash_password(password)
-            if user_password[0] == hashed_password:
-                return jsonify({'valid': True}), 200
+            if user_data[1] == hashed_password:
+                return jsonify({'valid': True, 'user_id': user_id}), 200
             else:
                 return jsonify({'valid': False}), 200
         else:
@@ -148,7 +159,7 @@ def verify_credentials():
 def add_chat_to_user():
     data = request.get_json()
     user_id = data.get('user_id')
-    chat_content = json.dumps(data.get('chat_content'))
+    chat_content = data.get('chat_content')
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -165,6 +176,7 @@ def add_chat_to_user():
     finally:
         cursor.close()
         conn.close()
+
 
 @app.route('/chats/<int:chat_id>', methods=['PUT'])
 def update_chat(chat_id):
@@ -236,7 +248,6 @@ def get_chats_by_user(user_id):
 def set_user_settings():
     data = request.get_json()
     user_id = data.get('user_id')
-    dark_mode = data.get('dark_mode')
     temperature = data.get('temperature')
     typing_speed = data.get('typing_speed')
 
@@ -244,10 +255,10 @@ def set_user_settings():
     cursor = conn.cursor()
 
     try:
-        cursor.execute('INSERT INTO user_settings (user_id, dark_mode, temperature, typing_speed) '
-                       'VALUES (%s, %s, %s, %s) ON CONFLICT (user_id) DO UPDATE '
-                       'SET dark_mode = %s, temperature = %s, typing_speed = %s',
-                       (user_id, dark_mode, temperature, typing_speed, dark_mode, temperature, typing_speed))
+        cursor.execute('INSERT INTO user_settings (user_id, temperature, typing_speed) '
+                       'VALUES (%s, %s, %s) ON CONFLICT (user_id) DO UPDATE '
+                       'SET temperature = %s, typing_speed = %s',
+                       (user_id, temperature, typing_speed, temperature, typing_speed))
         conn.commit()
         return jsonify({'message': 'User settings updated successfully'}), 200
     except Exception as e:
@@ -268,9 +279,8 @@ def get_user_settings(user_id):
         if settings:
             settings_data = {
                 'user_id': settings[0],
-                'dark_mode': settings[1],
-                'temperature': settings[2],
-                'typing_speed': settings[3]
+                'temperature': settings[1],
+                'typing_speed': settings[2]
             }
             return jsonify(settings_data), 200
         else:
@@ -281,44 +291,8 @@ def get_user_settings(user_id):
         cursor.close()
         conn.close()
 
-@app.route('/user_settings/dark_mode/<int:user_id>', methods=['PUT'])
-def set_dark_mode(user_id):
-    data = request.get_json()
-    dark_mode = data.get('dark_mode')
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
 
-    try:
-        cursor.execute('INSERT INTO user_settings (user_id, dark_mode) '
-                       'VALUES (%s, %s) ON CONFLICT (user_id) DO UPDATE SET dark_mode = %s',
-                       (user_id, dark_mode, dark_mode))
-        conn.commit()
-        return jsonify({'message': 'Dark mode setting updated successfully'}), 200
-    except Exception as e:
-        conn.rollback()
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
-
-@app.route('/user_settings/dark_mode/<int:user_id>', methods=['GET'])
-def get_dark_mode(user_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    try:
-        cursor.execute('SELECT dark_mode FROM user_settings WHERE user_id = %s', (user_id,))
-        dark_mode = cursor.fetchone()
-        if dark_mode:
-            return jsonify({'dark_mode': dark_mode[0]}), 200
-        else:
-            return jsonify({'message': 'Dark mode not found for this user'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
 
 @app.route('/user_settings/temperature/<int:user_id>', methods=['PUT'])
 def set_temperature(user_id):

@@ -1,6 +1,6 @@
 <div id="chatDisplayBox" class="container">
 
-  <ng-container *ngFor="let message of chatMessages; index as i; last as isLast;">
+  <ng-container *ngFor="let message of displayChatMessages(); index as i; last as isLast;">
 
     <div *ngIf="!isLast" class="row">
 

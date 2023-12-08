@@ -6,9 +6,18 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'http://127.0.0.1:8888'; 
+  private apiUrl = 'http://127.0.0.1:8888';
+  private userID:number|null = null;
 
   constructor(private http: HttpClient) {}
+
+  public setUserID(id: number|null): void {
+    this.userID = id;
+  }
+
+  public getUserID(): number|null {
+    return this.userID;
+  }
 
   public addUser(username: string, password: string): Observable<any> {
     const body = { username, password };
@@ -47,12 +56,16 @@ export class DataService {
     return this.http.get<any>(`${this.apiUrl}/chats/${chatId}`);
   }
 
+  public getChatByUserAndId(userId: number, chatId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/chats/${chatId}/user/${userId}`);
+  }
+
   public getChatsByUser(userId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/chats/user/${userId}`);
   }
 
-  public setUserSettings(userId: number, darkMode: boolean, temperature: number, typingSpeed: number): Observable<any> {
-    const body = { user_id: userId, dark_mode: darkMode, temperature, typing_speed: typingSpeed };
+  public setUserSettings(userId: number, temperature: number, typingSpeed: number): Observable<any> {
+    const body = { user_id: userId, temperature, typing_speed: typingSpeed };
     return this.http.post<any>(`${this.apiUrl}/user_settings/add`, body);
   }
 
@@ -60,14 +73,6 @@ export class DataService {
     return this.http.get<any>(`${this.apiUrl}/user_settings/${userId}`);
   }
 
-  public setDarkMode(userId: number, darkMode: boolean): Observable<any> {
-    const body = { dark_mode: darkMode };
-    return this.http.put<any>(`${this.apiUrl}/user_settings/dark_mode/${userId}`, body);
-  }
-
-  public getDarkMode(userId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/user_settings/dark_mode/${userId}`);
-  }
 
   public setTemperature(userId: number, temperature: number): Observable<any> {
     const body = { temperature };
