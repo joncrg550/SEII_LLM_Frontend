@@ -1,5 +1,7 @@
-<div class="chat-display">
-  <div class="chat-message" *ngFor="let message of chatMessages">
-    {{ message }}
+<div id="chatDisplayBox" class="chat-display">
+  <div class="chat-message" *ngFor="let message of chatMessages; index as i; last as isLast; ">
+    <span *ngIf="!isLast">{{ message }}</span>
   </div>
-</div>
+  <ngx-typed-js #typed>
+    <span class="typing"></span>
+  </ngx-typed-js>

@@ -19,6 +19,8 @@ import { ExportDialogComponent } from './components/Settings/export-dialog/expor
 import { Page404Component } from './components/StatusPages/page404/page404.component';
 import { Page403Component } from './components/StatusPages/page403/page403.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {NgxTypedJsModule} from 'ngx-typed-js';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     LoginFormComponent,
     ExportDialogComponent,
     Page404Component,
-    Page403Component
+    Page403Component,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +46,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     HttpClientModule,
     NgbModule,
+    BrowserAnimationsModule,
+    NgxTypedJsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

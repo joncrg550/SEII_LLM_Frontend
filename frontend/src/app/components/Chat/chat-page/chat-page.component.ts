@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {Router} from '@angular/router';
+import { ChatService } from 'src/app/services/chat-service/chat.service';
+import { ChatDisplayComponent } from 'src/app/components/Chat/chat-display/chat-display.component';
+import { ChatInputComponent } from 'src/app/components/Chat/chat-input/chat-input.component';
 
 @Component({
   selector: 'chat-page',
@@ -7,11 +10,25 @@ import {Router} from '@angular/router';
   styleUrls: ['./chat-page.component.css']
 })
 export class ChatPageComponent implements OnInit {
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private chatService: ChatService) { };
 
-  ngOnInit(): void {
-  }
+    @ViewChild(ChatInputComponent) chatInput!: ChatInputComponent;
+    @ViewChild(ChatDisplayComponent) chatDisplay!: ChatDisplayComponent;
 
+    ngOnInit(): void {
+      this.chatService.setOwner(this);
+    }
+
+    get getChatService(){
+      return this.chatService;
+    }
+
+    get getChatDisplay(){
+      return this.chatDisplay;
+    }
+    
   goToSettings(): void {
     this.router.navigate(['/settings']);
   }
