@@ -10,7 +10,6 @@ export class SettingsFormComponent {
   currentPassword: string = '';
   newPassword: string = '';
   confirmPassword: string = '';
-  selectedTheme: boolean = true; // Assuming 'light' or 'dark'
   selectedTemperature: number = 1; // Assuming a range from 1 to 5
   selectedSpeed: number = 1; // Assuming a range from 1 to 5
 
@@ -21,7 +20,6 @@ export class SettingsFormComponent {
       this.currentPassword.trim() !== '' &&
       this.newPassword.trim() !== '' &&
       this.confirmPassword.trim() !== '' &&
-      this.selectedTheme  &&
       this.selectedTemperature > 0 &&
       this.selectedSpeed > 0
     ) {
@@ -42,7 +40,7 @@ export class SettingsFormComponent {
         });
 
       // Update user settings
-      this.dataService.setUserSettings(this.userId, this.selectedTheme, this.selectedTemperature, this.selectedSpeed)
+      this.dataService.setUserSettings(this.userId,  this.selectedTemperature, this.selectedSpeed)
         .subscribe(() => {
           console.log('Settings updated successfully!');
           // Perform actions after successful settings update

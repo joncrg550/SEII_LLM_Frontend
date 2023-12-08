@@ -236,7 +236,6 @@ def get_chats_by_user(user_id):
 def set_user_settings():
     data = request.get_json()
     user_id = data.get('user_id')
-    dark_mode = data.get('dark_mode')
     temperature = data.get('temperature')
     typing_speed = data.get('typing_speed')
 
@@ -244,10 +243,10 @@ def set_user_settings():
     cursor = conn.cursor()
 
     try:
-        cursor.execute('INSERT INTO user_settings (user_id, dark_mode, temperature, typing_speed) '
-                       'VALUES (%s, %s, %s, %s) ON CONFLICT (user_id) DO UPDATE '
-                       'SET dark_mode = %s, temperature = %s, typing_speed = %s',
-                       (user_id, dark_mode, temperature, typing_speed, dark_mode, temperature, typing_speed))
+        cursor.execute('INSERT INTO user_settings (user_id, temperature, typing_speed) '
+                       'VALUES (%s, %s, %s) ON CONFLICT (user_id) DO UPDATE '
+                       'SET temperature = %s, typing_speed = %s',
+                       (user_id, temperature, typing_speed, temperature, typing_speed))
         conn.commit()
         return jsonify({'message': 'User settings updated successfully'}), 200
     except Exception as e:
@@ -268,9 +267,8 @@ def get_user_settings(user_id):
         if settings:
             settings_data = {
                 'user_id': settings[0],
-                'dark_mode': settings[1],
-                'temperature': settings[2],
-                'typing_speed': settings[3]
+                'temperature': settings[1],
+                'typing_speed': settings[2]
             }
             return jsonify(settings_data), 200
         else:
@@ -281,44 +279,8 @@ def get_user_settings(user_id):
         cursor.close()
         conn.close()
 
-@app.route('/user_settings/dark_mode/<int:user_id>', methods=['PUT'])
-def set_dark_mode(user_id):
-    data = request.get_json()
-    dark_mode = data.get('dark_mode')
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
 
-    try:
-        cursor.execute('INSERT INTO user_settings (user_id, dark_mode) '
-                       'VALUES (%s, %s) ON CONFLICT (user_id) DO UPDATE SET dark_mode = %s',
-                       (user_id, dark_mode, dark_mode))
-        conn.commit()
-        return jsonify({'message': 'Dark mode setting updated successfully'}), 200
-    except Exception as e:
-        conn.rollback()
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
-
-@app.route('/user_settings/dark_mode/<int:user_id>', methods=['GET'])
-def get_dark_mode(user_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    try:
-        cursor.execute('SELECT dark_mode FROM user_settings WHERE user_id = %s', (user_id,))
-        dark_mode = cursor.fetchone()
-        if dark_mode:
-            return jsonify({'dark_mode': dark_mode[0]}), 200
-        else:
-            return jsonify({'message': 'Dark mode not found for this user'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
 
 @app.route('/user_settings/temperature/<int:user_id>', methods=['PUT'])
 def set_temperature(user_id):
