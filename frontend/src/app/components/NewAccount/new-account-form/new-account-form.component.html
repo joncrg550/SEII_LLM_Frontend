@@ -1,14 +1,25 @@
-<!-- FILEPATH: /c:/Users/joncr/Desktop/SEII_LLM_Frontend/frontend/src/app/components/NewAccount/new-account-form/new-account-form.component.html -->
-
-<form (ngSubmit)="createAccount()">
-  <div>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" [(ngModel)]="username" required>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <form (ngSubmit)="createAccount()" class="form">
+        <div class="form-group row">
+          <label for="username" class="col-sm-3 col-form-label font-weight-bold">Username:</label>
+          <div class="col-sm-9">
+            <input type="text" id="username" name="username" [(ngModel)]="username" required class="form-control">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="password" class="col-sm-3 col-form-label font-weight-bold">Password:</label>
+          <div class="col-sm-9">
+            <input type="password" id="password" name="password" [(ngModel)]="password" required class="form-control">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-9 offset-sm-3">
+            <button type="submit" class="btn btn-primary">Create Account</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
-  <div>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" [(ngModel)]="password" required>
-  </div>
-  <button type="submit">Create Account</button>
-</form>
-
+</div>
