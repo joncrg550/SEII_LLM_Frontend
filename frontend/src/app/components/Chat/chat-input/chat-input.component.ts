@@ -36,6 +36,7 @@ export class ChatInputComponent {
   }
 
   newChat(){
+    this.parent.chatDisplay.destroy();
     this.chatService.createNewChat();
   }
 }
