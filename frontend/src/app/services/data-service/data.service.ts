@@ -7,8 +7,17 @@ import { Observable } from 'rxjs';
 })
 export class DataService {
   private apiUrl = 'http://127.0.0.1:8888';
+  private userID:number|null = null;
 
   constructor(private http: HttpClient) {}
+
+  public setUserID(id: number): void {
+    this.userID = id;
+  }
+
+  public getUserID(): number|null {
+    return this.userID;
+  }
 
   public addUser(username: string, password: string): Observable<any> {
     const body = { username, password };

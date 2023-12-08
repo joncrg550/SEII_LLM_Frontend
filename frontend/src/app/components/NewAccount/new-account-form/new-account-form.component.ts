@@ -16,8 +16,9 @@ export class NewAccountFormComponent {
   createAccount(): void {
     if (this.username.trim() !== '' && this.password.trim() !== '') {
       this.dataService.addUser(this.username, this.password)
-        .subscribe((userId: any) => {
-          console.log(`User with ID ${userId} created successfully!`);
+        .subscribe((user: any) => {
+          const { userID, username, password, hashed_password } = user;
+          console.log('User created successfully!');
           // Navigate to the login page
           this.router.navigate(['/login']);
           // Perform any additional actions or navigate after user creation if needed

@@ -17,12 +17,13 @@ export class LoginFormComponent {
     if (this.username.trim() !== '' && this.password.trim() !== '') {
       this.dataService.verifyCredentials(this.username, this.password)
         .toPromise()
-        .then((isValid: boolean) => {
+        .then((response: any) => {
+          const isValid: boolean = response.valid;
+          const userId: number = response.user_id;
           if (isValid) {
-            console.log('Login successful!');
             // Perform actions after successful login (e.g., navigate to a different page)
+            this.dataService.setUserID(userId);
             this.router.navigate(['/chat']);
-           
           } else {
             console.error('Invalid username or password!');
             // Handle case where login credentials are invalid
