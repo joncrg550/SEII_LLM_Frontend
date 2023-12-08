@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+# import psycopg2
 import psycopg2
+# import psycopg2_binary as psycopg2
 from psycopg2.extras import Json
 import hashlib
 import json
