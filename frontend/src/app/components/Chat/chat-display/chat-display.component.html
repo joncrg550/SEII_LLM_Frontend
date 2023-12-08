@@ -1,28 +1,7 @@
-<div class="chat-display">
-  <div class="chat-message" *ngFor="let message of chatMessages">
-    {{ message }}
+<div id="chatDisplayBox" class="chat-display">
+  <div class="chat-message" *ngFor="let message of chatMessages; index as i; last as isLast; ">
+    <span *ngIf="!isLast">{{ message }}</span>
   </div>
-</div>
-
-<script>
-  function typeText(item, text, delay, i) {
-    $(item).append(text.charAt(i))
-        .delay(delay)
-        .promise()
-        .done(function() {
-          if(i<text.length) {
-            i++;
-            typeText(item, text, delay, i);  
-          }
-    });       
-}
-
-var text = 'Some Text';
-var item = $("#_ngcontent-ng-c3338167516");
-
-$(document).on('click', 'button', function(){
-  item.empty();
-  typeText(item, text, 500, 0);
-});
-
-</script>
+  <ngx-typed-js #typed>
+    <span class="typing"></span>
+  </ngx-typed-js>

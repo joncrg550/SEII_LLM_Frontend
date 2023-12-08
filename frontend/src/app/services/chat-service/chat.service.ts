@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.component';
 
 @Injectable({
   providedIn: 'root',
@@ -7,10 +8,16 @@ import { HttpClient } from '@angular/common/http';
 export class ChatService {
   // list to hold the messages, ephemeral,needs to be pushed to database
   chatMessages: {}[] = [];
+  lastMessage: any;
   JSONResponse: any;
+  currentOwner?: ChatPageComponent;
 
   //dependency injection for http client
   constructor(private http: HttpClient) {}
+
+  setOwner(object:ChatPageComponent){
+    this.currentOwner = object;
+  }
 
   //endpoint for chat API
   private endpoint = 'http://127.0.0.1:5000/chat';
@@ -41,6 +48,9 @@ export class ChatService {
         this.JSONResponse = data.response;
         // Push this plus AI into the list of messages to display on the frontend.
         this.chatMessages.push("AI:" + this.JSONResponse);
+        this.lastMessage = "AI:" + this.JSONResponse;
+        this.currentOwner?.getChatDisplay.startNewAIResponse(this.lastMessage);
+        // this.chatMessages.push("AI:" + this.JSONResponse);
       })
       .catch((error: any) => {
         // Log the error to the console

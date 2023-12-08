@@ -6,28 +6,10 @@
   border-radius: 4px;
   height: 300px;
   overflow-y: auto;
-
+  
   .chat-message {
     margin: 5px 0;
     padding: 5px;
     border-radius: 4px;
   }
 }
-/* 
-@keyframes blink { 
-  50% { border-color: #ffffff; } 
-}
-
-div {
- display: inline-block;
- height: 20px;
- width: 100%;
- border-right: 2px solid #000000;
- animation: blink .5s step-end infinite alternate;
-} */
-
-/* button {
- display: block;
- width: 100px;
- height: 30px;
-} */
