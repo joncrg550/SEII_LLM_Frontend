@@ -4,6 +4,8 @@ import psycopg2
 from psycopg2.extras import Json
 import hashlib
 import json
+from json import JSONDecodeError
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) #allow all origins for demo purposes
@@ -178,17 +180,18 @@ def add_chat_to_user():
         conn.close()
 
 
-@app.route('/chats/<int:chat_id>', methods=['PUT'])
-def update_chat(chat_id):
+
+@app.route('/chats/<int:chat_id>/user/<int:user_id>', methods=['PUT'])
+def update_chat(chat_id, user_id):
     data = request.get_json()
-    new_chat_content = json.dumps(data.get('new_chat_content'))
+    new_chat_content = data.get('new_chat_content')
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        cursor.execute('UPDATE chats SET chat_content = %s WHERE chat_id = %s',
-                       (new_chat_content, chat_id))
+        cursor.execute('UPDATE chats SET chat_content = %s WHERE chat_id = %s AND user_id = %s',
+                       (new_chat_content, chat_id, user_id))
         conn.commit()
         return jsonify({'message': 'Chat updated successfully'}), 200
     except Exception as e:
@@ -198,21 +201,25 @@ def update_chat(chat_id):
         cursor.close()
         conn.close()
 
-@app.route('/chats/<int:chat_id>', methods=['GET'])
-def get_chat_by_id(chat_id):
+
+@app.route('/chats/<int:chat_id>/user/<int:user_id>', methods=['GET'])
+def get_chat_by_id_and_user(chat_id, user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        cursor.execute('SELECT * FROM chats WHERE chat_id = %s', (chat_id,))
+        cursor.execute('SELECT * FROM chats WHERE chat_id = %s AND user_id = %s', (chat_id, user_id))
         chat = cursor.fetchone()
         if chat:
-            chat_data = {
-                'chat_id': chat[0],
-                'user_id': chat[1],
-                'chat_content': json.loads(chat[2])
-            }
-            return jsonify(chat_data), 200
+            try:
+                chat_data = {
+                    'chat_id': chat[0],
+                    'user_id': chat[1],
+                    'chat_content': chat[2]
+                }
+                return jsonify(chat_data), 200
+            except JSONDecodeError as je:
+                return jsonify({'error': f'Invalid JSON format: {str(je)}'}), 400
         else:
             return jsonify({'message': 'Chat not found'}), 404
     except Exception as e:
@@ -220,6 +227,7 @@ def get_chat_by_id(chat_id):
     finally:
         cursor.close()
         conn.close()
+
 
 @app.route('/chats/user/<int:user_id>', methods=['GET'])
 def get_chats_by_user(user_id):
