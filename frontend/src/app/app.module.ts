@@ -18,6 +18,7 @@ import { LoginFormComponent } from './components/Login/login-form/login-form.com
 import { ExportDialogComponent } from './components/Settings/export-dialog/export-dialog.component';
 import { Page404Component } from './components/StatusPages/page404/page404.component';
 import { Page403Component } from './components/StatusPages/page403/page403.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { Page403Component } from './components/StatusPages/page403/page403.compo
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
