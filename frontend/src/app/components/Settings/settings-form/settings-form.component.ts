@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from 'src/app/services/data-service/data.service';
 @Component({
-  selector: 'app-settings',
+  selector: 'settings-form',
   templateUrl: './settings-form.component.html',
   styleUrls: ['./settings-form.component.css']
 })

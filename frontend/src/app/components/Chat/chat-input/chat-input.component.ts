@@ -20,4 +20,8 @@ export class ChatInputComponent {
       this.userMessage = '';
     }
   }
+
+  newChat(){
+    //#ToDo: Implement new chat functionality
+  }
 }
