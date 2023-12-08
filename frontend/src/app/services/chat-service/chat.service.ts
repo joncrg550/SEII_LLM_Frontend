@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.component';
+import { OpenAiService } from '../../open-ai.service';
 
 @Injectable({
   providedIn: 'root',
@@ -30,9 +31,10 @@ export class ChatService {
 
       //turn the string into a JSON object
       const JSONMessage = {
-        text: message
+        text: message,
       }
 
+      this.currentOwner?.getOpenAIService.getDataFromOpenAPI(message.toString());
       //print it for debugging
       console.log(JSONMessage)
 
