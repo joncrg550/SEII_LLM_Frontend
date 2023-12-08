@@ -73,7 +73,6 @@ export class ChatService {
         //  </html>
         //  `);
 
-        
         this.lastMessage = "AI:" + this.JSONResponse;
         this.currentOwner?.getChatDisplay.startNewAIResponse(this.lastMessage);
         // this.chatMessages.push("AI:" + this.JSONResponse);
@@ -85,7 +84,7 @@ export class ChatService {
         this.dataService.getChatByUserAndId(this.userID, this.chatID).subscribe(data => {
           console.log("data", data);
         });
-        
+
       })
       .catch((error: any) => {
         // Log the error to the console
