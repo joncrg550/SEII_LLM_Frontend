@@ -9,7 +9,7 @@ import { ChatService } from 'src/app/services/chat-service/chat.service';
 export class ChatDisplayComponent {
   constructor(private chatService: ChatService) {}
 
-  get chatMessages() {
-    return this.chatService.chatMessages;
+  displayChatMessages() {
+    return this.chatService.getChatMessages();
   }
 }

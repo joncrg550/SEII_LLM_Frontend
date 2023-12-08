@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import psycopg2
+from psycopg2.extras import Json
 import hashlib
+import json
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) #allow all origins for demo purposes
@@ -23,10 +25,6 @@ def get_db_connection():
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-import psycopg2
-import hashlib
 
 @app.route('/users/add', methods=['POST'])
 def add_user():
@@ -161,7 +159,7 @@ def verify_credentials():
 def add_chat_to_user():
     data = request.get_json()
     user_id = data.get('user_id')
-    chat_content = json.dumps(data.get('chat_content'))
+    chat_content = data.get('chat_content')
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -178,6 +176,7 @@ def add_chat_to_user():
     finally:
         cursor.close()
         conn.close()
+
 
 @app.route('/chats/<int:chat_id>', methods=['PUT'])
 def update_chat(chat_id):

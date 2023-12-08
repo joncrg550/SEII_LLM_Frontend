@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ChatService } from 'src/app/services/chat-service/chat.service';
 
+
 @Component({
   selector: 'chat-input',
   templateUrl: './chat-input.component.html',
@@ -9,6 +10,9 @@ import { ChatService } from 'src/app/services/chat-service/chat.service';
 export class ChatInputComponent {
   userMessage = '';
 
+  onInit() {
+    this.chatService.createNewChat();
+  }
 
   constructor(private chatService: ChatService) {}
 
@@ -22,6 +26,6 @@ export class ChatInputComponent {
   }
 
   newChat(){
-    //#ToDo: Implement new chat functionality
+    this.chatService.createNewChat();
   }
 }
