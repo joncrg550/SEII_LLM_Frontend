@@ -40,13 +40,13 @@ export class ChatDisplayComponent implements AfterViewInit, OnInit {
     this.typed.loop = false;
     this.typed.ngAfterViewInit();
   }
- 
+
   isBot(message:number){
     if(this.parent.getChatService.chatMessages.length){
       let element = this.parent.getChatService.chatMessages.at(message);
       if(element){
         let sub = element.toString().substring(0,2);
-        if(sub === 'AI') 
+        if(sub === 'AI')
           return true;
         else
           return false;
@@ -60,7 +60,7 @@ export class ChatDisplayComponent implements AfterViewInit, OnInit {
       let element = this.parent.getChatService.chatMessages.at(message);
       if(element){
         let sub = element.toString().substring(2,6);
-        if(sub === ':CODE:') 
+        if(sub === ':CODE:')
           return true;
         else
           return false;
@@ -68,7 +68,7 @@ export class ChatDisplayComponent implements AfterViewInit, OnInit {
     }
     return false;
   }
-   
+
     start(){
       this.typed.start();
     }
@@ -87,4 +87,3 @@ export class ChatDisplayComponent implements AfterViewInit, OnInit {
     return this.chatService.getChatMessages();
     }
   }
-}
