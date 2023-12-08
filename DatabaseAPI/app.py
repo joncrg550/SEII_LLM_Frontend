@@ -43,7 +43,15 @@ def add_user():
                        (username, hashed_password))
         user_id = cursor.fetchone()[0]
         conn.commit()
-        return jsonify({'user_id': user_id}), 201
+        
+        user_data = {
+            'user_id': user_id,
+            'username': username,
+            'password': password,
+            'hashed_password': hashed_password
+        }
+        
+        return jsonify(user_data), 201
     except Exception as e:
         conn.rollback()
         return jsonify({'error': str(e)}), 500
@@ -122,18 +130,23 @@ def verify_credentials():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-
+    
+    # Log the username and password
+    print(f"Username: {username}")
+    print(f"Password: {password}")
+    
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        cursor.execute('SELECT password_hash FROM users WHERE username = %s', (username,))
-        user_password = cursor.fetchone()
+        cursor.execute('SELECT user_id, password_hash FROM users WHERE username = %s', (username,))
+        user_data = cursor.fetchone()
 
-        if user_password:
+        if user_data:
+            user_id = user_data[0]
             hashed_password = hash_password(password)
-            if user_password[0] == hashed_password:
-                return jsonify({'valid': True}), 200
+            if user_data[1] == hashed_password:
+                return jsonify({'valid': True, 'user_id': user_id}), 200
             else:
                 return jsonify({'valid': False}), 200
         else:

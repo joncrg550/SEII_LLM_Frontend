@@ -11,7 +11,7 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
-  public setUserID(id: number): void {
+  public setUserID(id: number|null): void {
     this.userID = id;
   }
 
