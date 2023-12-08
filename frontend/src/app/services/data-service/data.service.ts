@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class DataService {
   private apiUrl = 'http://127.0.0.1:8888';
   private userID:number|null = null;
-  
+
   constructor(private http: HttpClient) {}
 
   public setUserID(id: number|null): void {
@@ -54,6 +54,10 @@ export class DataService {
 
   public getChatById(chatId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/chats/${chatId}`);
+  }
+
+  public getChatByUserAndId(userId: number, chatId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/chats/${chatId}/user/${userId}`);
   }
 
   public getChatsByUser(userId: number): Observable<any[]> {

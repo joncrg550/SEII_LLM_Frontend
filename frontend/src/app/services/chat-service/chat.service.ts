@@ -63,19 +63,14 @@ export class ChatService {
         // Push this plus AI into the list of messages to display on the frontend.
         this.chatMessages.push("AI:" + this.JSONResponse);
         // push the updated chat and response to the database
-        this.dataService.updateChat(this.chatID, this.chatMessages)
-        console.log("chatID",this.chatID)
-        console.log("chatMessages",this.chatMessages)
-      })
-      .catch((error: any) => {
-        // Log the error to the console
-        console.error('Error:', error);
-
-        // Perform any other error handling here
-        // For example, you can set a flag, display an error message, etc.
-      });
-
-
+        this.dataService.updateChat(this.chatID, this.chatMessages);
+        console.log("chatID", this.chatID);
+        console.log("chatMessages", this.chatMessages);
+        this.dataService.getChatByUserAndId(this.userID, this.chatID).subscribe(data => {
+          console.log("data", data);
+        });
+      }); 
     }
   }
 }
+

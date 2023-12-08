@@ -23,6 +23,7 @@ export class LoginFormComponent {
           if (isValid) {
             // Perform actions after successful login (e.g., navigate to a different page)
             this.dataService.setUserID(userId);
+            console.log("user id", userId);
             this.router.navigate(['/chat']);
           } else {
             console.error('Invalid username or password!');
