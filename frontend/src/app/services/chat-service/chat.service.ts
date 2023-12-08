@@ -8,17 +8,16 @@ import { ChatPageComponent } from 'src/app/components/Chat/chat-page/chat-page.c
 })
 export class ChatService {
   // list to hold the messages, ephemeral,needs to be pushed to database
-
-  private chatMessages: string [] = [];
-  private JSONResponse: any;
+  chatMessages: {}[] = [];
+  lastMessage: any;
+  JSONResponse: any;
+  currentOwner?: ChatPageComponent;
   private userID: any = this.dataService.getUserID();
   private chatID: any;
-  lastMessage: any;
-  currentOwner?: ChatPageComponent;
-
 
   //dependency injection for http client
-  constructor(private http: HttpClient, private dataService: DataService) {}
+ //dependency injection for http client
+ constructor(private http: HttpClient, private dataService: DataService) {}
 
   setOwner(object:ChatPageComponent){
     this.currentOwner = object;
@@ -26,10 +25,6 @@ export class ChatService {
 
   //endpoint for chat API
   private endpoint = 'http://127.0.0.1:5000/chat';
-
-  getChatMessages(): string[] {
-    return this.chatMessages;
-  }
 
   createNewChat(): void {
     console.log('userid',this.userID)
@@ -61,7 +56,6 @@ export class ChatService {
       //push it to the front end for viewing
       this.chatMessages.push("You:" +  message)
 
-
       //post it to the API, and process the response
       this.http.post(this.endpoint, JSONMessage).toPromise()
       .then((data: any) => {
@@ -71,16 +65,6 @@ export class ChatService {
         this.JSONResponse = data.response;
         // Push this plus AI into the list of messages to display on the frontend.
         this.chatMessages.push("AI:" + this.JSONResponse);
-
-        // push the updated chat and response to the database
-        this.dataService.updateChat(this.chatID, this.chatMessages);
-        console.log("chatID", this.chatID);
-        console.log("chatMessages", this.chatMessages);
-        this.dataService.getChatByUserAndId(this.userID, this.chatID).subscribe(data => {
-          console.log("data", data);
-        });
-      }); 
-
         // this.chatMessages.push("AI:CODE:" + `
         // <html>
         //      <article>
@@ -93,6 +77,15 @@ export class ChatService {
         this.lastMessage = "AI:" + this.JSONResponse;
         this.currentOwner?.getChatDisplay.startNewAIResponse(this.lastMessage);
         // this.chatMessages.push("AI:" + this.JSONResponse);
+
+        // push the updated chat and response to the database
+        this.dataService.updateChat(this.chatID, this.chatMessages);
+        console.log("chatID", this.chatID);
+        console.log("chatMessages", this.chatMessages);
+        this.dataService.getChatByUserAndId(this.userID, this.chatID).subscribe(data => {
+          console.log("data", data);
+        });
+        
       })
       .catch((error: any) => {
         // Log the error to the console
@@ -102,7 +95,7 @@ export class ChatService {
         // For example, you can set a flag, display an error message, etc.
       });
 
+
     }
   }
 }
-

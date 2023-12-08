@@ -23,9 +23,11 @@ describe('ChatDisplayComponent', () => {
 
   it('should display chat messages', () => {
     const chatMessages = [{ text: 'Message 1' }, { text: 'Message 2' }];
-    component.chatMessages = chatMessages;
+    // component.displayChatMessages = chatMessages;
     fixture.detectChanges();
     const chatMessageElements = fixture.nativeElement.querySelectorAll('.chat-message');
     expect(chatMessageElements.length).toEqual(chatMessages.length);
   });
 });
+
+

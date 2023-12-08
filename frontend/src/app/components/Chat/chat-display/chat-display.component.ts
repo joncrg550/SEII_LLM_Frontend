@@ -23,7 +23,7 @@ export class ChatDisplayComponent implements AfterViewInit, OnInit {
   name2: any[] = ['test me now'];
 
   @ViewChild('someInput') someInput!: ElementRef;
-   @ViewChild(NgxTypedJsComponent) typed!: NgxTypedJsComponent;
+  @ViewChild(NgxTypedJsComponent) typed!: NgxTypedJsComponent;
 
    ngOnChanges()	{
    }
@@ -84,7 +84,6 @@ export class ChatDisplayComponent implements AfterViewInit, OnInit {
 
     displayChatMessages() {
     this.name = this.parent.getChatService.lastMessage;
-    return this.chatService.getChatMessages();
+    return this.parent.getChatService.chatMessages;
     }
-  }
 }

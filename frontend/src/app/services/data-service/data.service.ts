@@ -42,12 +42,12 @@ export class DataService {
     return this.http.post<any>(`${this.apiUrl}/users/verify`, body);
   }
 
-  public addChatToUser(userId: number, chatContent: string[]): Observable<any> {
+  public addChatToUser(userId: number, chatContent: any[]): Observable<any> {
     const body = { user_id: userId, chat_content: chatContent };
     return this.http.post<any>(`${this.apiUrl}/chats/add`, body);
   }
 
-  public updateChat(chatId: number, newChatContent: string[]): Observable<any> {
+  public updateChat(chatId: number, newChatContent: any[]): Observable<any> {
     const body = { new_chat_content: newChatContent };
     return this.http.put<any>(`${this.apiUrl}/chats/${chatId}`, body);
   }
