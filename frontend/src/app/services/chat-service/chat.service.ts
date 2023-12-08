@@ -48,6 +48,15 @@ export class ChatService {
         this.JSONResponse = data.response;
         // Push this plus AI into the list of messages to display on the frontend.
         this.chatMessages.push("AI:" + this.JSONResponse);
+        // this.chatMessages.push("AI:CODE:" + `
+        // <html>
+        //      <article>
+        //     <h1>Article Heading</h1>
+        //     </article>
+        //  </html>
+        //  `);
+
+        
         this.lastMessage = "AI:" + this.JSONResponse;
         this.currentOwner?.getChatDisplay.startNewAIResponse(this.lastMessage);
         // this.chatMessages.push("AI:" + this.JSONResponse);
